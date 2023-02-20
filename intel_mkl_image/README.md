@@ -1,0 +1,1 @@
+`docker build -f Dockerfile.mkl -t intel-mkl:latest .`

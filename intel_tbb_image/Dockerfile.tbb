@@ -1,0 +1,8 @@
+FROM gcc:12.2
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# install Intel tbb 
+COPY ./install_intel_tbb.sh /
+RUN chmod +x /install_intel_tbb.sh && \
+    /install_intel_tbb.sh     

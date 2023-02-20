@@ -1,0 +1,1 @@
+`docker build -f Dockerfile.tbb -t intel-tbb:latest .`

@@ -1,0 +1,35 @@
+FROM gcc:12.2
+
+ENV DEBIAN_FRONTEND noninteractive
+
+COPY --from=cmake:latest /opt/cmake /opt/cmake
+RUN chmod +x /opt/cmake/bin/cmake
+# update path with cmake binary location
+ENV PATH="${PATH}:/opt/cmake/bin"
+
+# copy over Intel libraries (TBB, MKL) artefacts
+COPY --from=intel-tbb:latest /opt/intel/oneapi/ /opt/intel/oneapi/
+COPY --from=intel-mkl:latest /opt/intel/oneapi/ /opt/intel/oneapi/
+
+COPY ./build.sh /
+RUN chmod +x /build.sh
+
+# as of image gcc:12.1, Python3.9 is in use, which is sufficient for the use case here
+# install ninja and meson from PyPi
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3 && \
+    python3 -m pip install ninja==1.11.1 && \
+    python3 -m pip install meson==1.0.0 && \
+    python3 -m pip install gcovr==5.2 && \
+    mkdir build && chmod u+x ./build.sh
+
+RUN apt-get update -y && \
+    apt-get install --no-install-recommends -y  curl \
+                                                git \
+                                                wget \
+                                                libglfw3 \
+                                                libglfw3-dev \
+                                                freeglut3-dev \
+                                                mesa-utils \
+                                                pkg-config
+
+ENTRYPOINT ["/build.sh"]
