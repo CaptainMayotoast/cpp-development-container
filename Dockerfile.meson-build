@@ -11,6 +11,9 @@ ENV PATH="${PATH}:/opt/cmake/bin"
 COPY --from=intel-tbb:latest /opt/intel/oneapi/ /opt/intel/oneapi/
 COPY --from=intel-mkl:latest /opt/intel/oneapi/ /opt/intel/oneapi/
 
+# CUDA
+COPY --from=nvidia/cuda:12.1.0-devel-ubuntu22.04 /usr/local/cuda/* /usr/local/cuda/
+
 COPY ./build.sh /
 RUN chmod +x /build.sh
 
@@ -22,14 +25,14 @@ RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3 && \
     python3 -m pip install gcovr==5.2 && \
     mkdir build && chmod u+x ./build.sh
 
-RUN apt-get update -y && \
+RUN apt-get clean && apt-get update -y && \
     apt-get install --no-install-recommends -y  curl \
-                                                git \
-                                                wget \
-                                                libglfw3 \
-                                                libglfw3-dev \
-                                                freeglut3-dev \
-                                                mesa-utils \
-                                                pkg-config
+    git \
+    wget \
+    libglfw3 \
+    libglfw3-dev \
+    freeglut3-dev \
+    mesa-utils \
+    pkg-config
 
 ENTRYPOINT ["/build.sh"]

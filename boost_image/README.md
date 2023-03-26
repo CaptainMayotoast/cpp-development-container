@@ -4,6 +4,10 @@
 
 https://www.boost.org/doc/libs/1_81_0/more/getting_started/unix-variants.html
 
+## Building the Docker image from Dockerfile
+
+1. `docker build -f Dockerfile.boost -t boost:latest .`
+
 ## Installation
 
 Steps:
