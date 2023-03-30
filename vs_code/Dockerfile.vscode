@@ -4,11 +4,12 @@ ARG USERNAME=<username>
 ARG USER_UID=<host user id>
 ARG USER_GID=<host user gid>
 
+# user creation and permissions
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
     && apt-get update -y \
     && apt-get install -y sudo \
-    && echo $USERNAME ALL\=(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && echo $USERNAME ALL\=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME \
     && mkdir -p /home/$USERNAME/.vscode-server/extensions \
     && chown -R $USERNAME /home/$USERNAME/.vscode-server
@@ -25,6 +26,7 @@ USER $USERNAME
 COPY ./.bashrc /.bashrc
 RUN cat /.bashrc >> /home/$USERNAME/.bashrc
 
+# this script should run upon container creation
 COPY ./env_setup.sh /etc/profile.d/
 
 CMD ["/bin/bash"]

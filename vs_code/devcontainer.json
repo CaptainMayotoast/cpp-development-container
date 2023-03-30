@@ -1,7 +1,24 @@
 {
     "name": "C++ development envrionment",
-    "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash"
+    "customizations": {
+        "vscode":{
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash"
+            },
+            "extensions": [
+                "ms-vscode.cpptools-extension-pack",
+                "jeff-hykin.better-cpp-syntax",
+                "ms-python.vscode-pylance",
+                "ms-python.python",
+                "ms-azuretools.vscode-docker",
+                "mesonbuild.mesonbuild",
+                "surajbarkale.ninja",
+                "sonarsource.sonarlint-vscode",
+                "vscode-icons-team.vscode-icons",
+                "zxh404.vscode-proto3",
+                "bierner.emojisense"
+            ]
+        }
     },
     "build": {
         "dockerfile": "Dockerfile",
@@ -15,20 +32,10 @@
         "-e",
         "DISPLAY=${env:DISPLAY}",
         "-v",
-        "/tmp/.X11-unix:/tmp/.X11-unix"
-    ],
-    "extensions": [
-        "ms-vscode.cpptools-extension-pack",
-        "jeff-hykin.better-cpp-syntax",
-        "ms-python.vscode-pylance",
-        "ms-python.python",
-        "ms-azuretools.vscode-docker",
-        "mesonbuild.mesonbuild",
-        "surajbarkale.ninja",
-        "sonarsource.sonarlint-vscode",
-        "vscode-icons-team.vscode-icons",
-        "zxh404.vscode-proto3",
-        "bierner.emojisense"
+        "/tmp/.X11-unix:/tmp/.X11-unix",
+        "-v",
+        // requires running "git config --global [<user.email>|<user.name>] '<text>'" on the host
+        "/etc/gitconfig:/home/aschwartz/.gitconfig"
     ],
     // persist VS Code extensions, persist bash history
     // https://code.visualstudio.com/remote/advancedcontainers/avoid-extension-reinstalls
@@ -42,6 +49,7 @@
     "workspaceFolder": "/build",
     // refer to: https://docs.docker.com/engine/reference/commandline/service_create/#add-bind-mounts-volumes-or-memory-filesystems
     //           https://docs.docker.com/engine/reference/commandline/run/#add-bind-mounts-or-volumes-using-the---mount-flag
+    // 'workspaceMount' manages associating the root development folder outside the container with the internal container development folder (i.e. /build)
     "workspaceMount": "type=bind,source=${localWorkspaceFolder},target=/build,consistency=consistent",
     "updateRemoteUserUID": true,
     "overrideCommand": true,
