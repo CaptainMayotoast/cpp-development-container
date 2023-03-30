@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-cd build
+# enter /build within the container
+cd /build
+
+if [ "$1" == "-h" ]; then
+  echo "Usage: `basename $0` [debug|release|debugsan|coverage|clean|release-clean|debug-clean|debugsan-clean|coverage-clean]"
+  exit 0
+fi
 
 # check if the target folder exists, if it does, don't recreate
 if [ ! -d "$1" ] && [ $1 == "debug" ]; then
@@ -14,6 +20,8 @@ elif [ ! -d "$1" ] && [ $1 == "coverage" ]; then
 fi
 
 # invoke Ninja
+# Ninja replaces make here
+# yay :100:
 if [ $1 == "clean" ]; then
     ninja -C debugsan clean
     ninja -C release clean
