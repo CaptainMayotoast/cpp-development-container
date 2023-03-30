@@ -14,16 +14,12 @@ COPY --from=intel-mkl:latest /opt/intel/oneapi/ /opt/intel/oneapi/
 # CUDA
 COPY --from=nvidia/cuda:12.1.0-devel-ubuntu22.04 /usr/local/cuda/* /usr/local/cuda/
 
-COPY ./build.sh /
-RUN chmod +x /build.sh
-
 # as of image gcc:12.1, Python3.9 is in use, which is sufficient for the use case here
 # install ninja and meson from PyPi
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3 && \
     python3 -m pip install ninja==1.11.1 && \
     python3 -m pip install meson==1.0.0 && \
-    python3 -m pip install gcovr==5.2 && \
-    mkdir build && chmod u+x ./build.sh
+    python3 -m pip install gcovr==5.2
 
 RUN apt-get clean && apt-get update -y && \
     apt-get install --no-install-recommends -y  curl \
@@ -34,5 +30,9 @@ RUN apt-get clean && apt-get update -y && \
     freeglut3-dev \
     mesa-utils \
     pkg-config
+
+COPY ./build.sh /
+RUN chmod +x /build.sh && \
+    mkdir build && chmod u+x ./build.sh
 
 ENTRYPOINT ["/build.sh"]
