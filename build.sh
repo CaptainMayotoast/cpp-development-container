@@ -3,9 +3,14 @@
 # enter /build within the container
 cd /build
 
+if [ "$1" == "" ]; then
+    echo "Specify arguments, please"
+    exit 1
+fi
+
 if [ "$1" == "-h" ]; then
-  echo "Usage: `basename $0` [debug|release|debugsan|coverage|clean|release-clean|debug-clean|debugsan-clean|coverage-clean]"
-  exit 0
+    echo "Usage: `basename $0` [debug|release|debugsan|coverage|clean|release-clean|debug-clean|debugsan-clean|coverage-clean]"
+    exit 0
 fi
 
 # check if the target folder exists, if it does, don't recreate
