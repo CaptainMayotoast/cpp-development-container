@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BOOST_VERSION=1.81.0
+BOOST_VERSION=1.82.0
 
 echo "downloading boost"
 

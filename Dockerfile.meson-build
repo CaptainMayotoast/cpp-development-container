@@ -18,7 +18,7 @@ COPY --from=nvidia/cuda:12.1.0-devel-ubuntu22.04 /usr/local/cuda/* /usr/local/cu
 # install ninja and meson from PyPi
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3 && \
     python3 -m pip install ninja==1.11.1 && \
-    python3 -m pip install meson==1.0.0 && \
+    python3 -m pip install meson==1.1.0 && \
     python3 -m pip install gcovr==5.2
 
 RUN apt-get clean && apt-get update -y && \
@@ -29,7 +29,8 @@ RUN apt-get clean && apt-get update -y && \
     libglfw3-dev \
     freeglut3-dev \
     mesa-utils \
-    pkg-config
+    pkg-config \
+    python3.9-dev
 
 COPY ./build.sh /
 RUN chmod +x /build.sh && \
