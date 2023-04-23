@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 /opt/cmake/bin/cmake --version
 
 git clone --recurse-submodules -b v1.54.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc && \

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 BOOST_VERSION=1.82.0
 
 echo "downloading boost"
@@ -9,6 +11,7 @@ tar -xzvf boost-$BOOST_VERSION.tar.gz
 cd boost-$BOOST_VERSION
 ./bootstrap.sh --prefix=/opt/boost
 echo "installing boost"
+./b2 link=static
 ./b2 install
 echo "installing boost headers"
 ./b2 headers
