@@ -14,6 +14,7 @@ COPY --from=intel-mkl:latest /opt/intel/oneapi/ /opt/intel/oneapi/
 # CUDA
 COPY --from=nvidia/cuda:12.1.0-devel-ubuntu22.04 /usr/local/cuda/* /usr/local/cuda/
 
+# Debian backports to get pipx
 RUN echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
     echo "deb-src http://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
     apt update -y
