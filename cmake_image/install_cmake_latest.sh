@@ -2,7 +2,7 @@
 
 set -e
 
-CMAKE_VERSION=3.26.3
+CMAKE_VERSION=3.26.4
 
 wget https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION.tar.gz
 tar -xzvf cmake-$CMAKE_VERSION.tar.gz

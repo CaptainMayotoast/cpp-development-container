@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # boost
 docker build -f ./boost_image/Dockerfile.boost -t boost:latest ./boost_image
