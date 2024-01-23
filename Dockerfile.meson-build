@@ -42,6 +42,7 @@ RUN apt-get clean && apt-get update -y && \
 RUN pipx ensurepath && \ 
     pipx install ninja==1.11.1 && \
     pipx install meson==1.1.1 && \
+    pipx install conan==2.0.17 && \
     pipx install gcovr==5.2 && \
     chmod -R 757 /usr/local/bin
 
