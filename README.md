@@ -11,3 +11,5 @@
 3. `build.sh` is used as `Dockerfile.meson-build`'s entry point script and allows the user to treat said container as an executable, essentially.  The script has also been adapted for VS Code + container development usage.
 
 4. Folder `vs_code` contains useful files for VS Code + container development.  The README within should specify what goes where.  Hand updating a few of those files with a username that exists on the host (i.e. the one currently logged into) is necessary.
+
+5. testing
