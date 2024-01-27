@@ -1,0 +1,20 @@
+FROM gcc:13.2
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# copy over install script
+COPY ./install_selene.sh /
+
+# install deps
+RUN wget -q -O- https://packagecloud.io/dcommander/libjpeg-turbo/gpgkey | \
+    gpg --dearmor >/etc/apt/trusted.gpg.d/libjpeg-turbo.gpg
+RUN wget https://raw.githubusercontent.com/libjpeg-turbo/repo/main/libjpeg-turbo.list -O /etc/apt/sources.list.d/libjpeg-turbo.list
+RUN apt-get update -y && apt-get install -y libpng-dev zlib1g-dev libjpeg-turbo-official tar unzip wget curl git zip
+
+COPY --from=cmake:latest /opt/cmake /opt/cmake
+# update path with cmake binary location
+ENV PATH="${PATH}:/opt/cmake/bin" MY_INSTALL_DIR="/usr/local" PATH="$MY_INSTALL_DIR/bin:$PATH"
+
+# installation
+RUN chmod +x /install_selene.sh && \
+    /install_selene.sh     
