@@ -1,7 +1,7 @@
 {
     "name": "C++ development envrionment",
     "customizations": {
-        "vscode":{
+        "vscode": {
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "bash"
             },
@@ -16,7 +16,8 @@
                 "sonarsource.sonarlint-vscode",
                 "vscode-icons-team.vscode-icons",
                 "zxh404.vscode-proto3",
-                "bierner.emojisense"
+                "bierner.emojisense",
+                "xaver.clang-format" // https://marketplace.visualstudio.com/items?itemName=xaver.clang-format
             ]
         }
     },
@@ -32,10 +33,12 @@
         "-e",
         "DISPLAY=${env:DISPLAY}",
         "-v",
+        // requires running "git config --global [<user.email>|<user.name>] '<text>'" on the host
+        "/home/<HOST USERNAME HERE>/.gitconfig:/etc/gitconfig",
+        "-v",
         "/tmp/.X11-unix:/tmp/.X11-unix",
         "-v",
-        // requires running "git config --global [<user.email>|<user.name>] '<text>'" on the host
-        "/etc/gitconfig:/home/aschwartz/.gitconfig"
+        "/home/<HOST USERNAME HERE>/.ssh:/home/<HOST USERNAME HERE>/.ssh"
     ],
     // persist VS Code extensions, persist bash history
     // https://code.visualstudio.com/remote/advancedcontainers/avoid-extension-reinstalls

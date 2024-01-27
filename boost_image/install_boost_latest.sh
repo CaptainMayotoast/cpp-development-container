@@ -2,7 +2,10 @@
 
 set -e
 
-BOOST_VERSION=1.82.0
+# https://github.com/boostorg/boost/releases/tag/
+# https://github.com/grpc/grpc/blob/master/BUILDING.md#build-from-source
+
+BOOST_VERSION=1.84.0
 
 echo "downloading boost"
 
