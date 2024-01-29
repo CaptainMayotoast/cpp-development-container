@@ -10,7 +10,7 @@ set -e
 git clone https://github.com/kmhofmann/selene.git
 cd selene
 mkdir build && cd build
-/opt/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Release -DSELENE_BUILD_ALL=OFF -DSELENE_BUILD_TESTS=OFF ..
+/opt/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Release -DSELENE_BUILD_ALL=OFF -DSELENE_USE_OPENCV=OFF -DSELENE_USE_LIBTIFF=OFF -DSELENE_BUILD_TESTS=OFF ..
 /opt/cmake/bin/cmake --build . -j 
 
 # for the config and version files at /selene/build/selene/
