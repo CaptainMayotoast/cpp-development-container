@@ -16,8 +16,5 @@ docker build -f ./intel_mkl_image/Dockerfile.mkl -t intel-mkl:latest ./intel_mkl
 # Intel TBB
 docker build -f ./intel_tbb_image/Dockerfile.tbb -t intel-tbb:latest ./intel_tbb_image
 
-# Selene
-docker build -f ./selene_image/Dockerfile.selene -t selene:latest ./selene_image
-
 # meson-build (final build image)
 docker build -f ./Dockerfile.meson-build -t meson-build:latest .

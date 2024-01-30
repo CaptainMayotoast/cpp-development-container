@@ -16,8 +16,5 @@ buildah build -f ./intel_mkl_image/Dockerfile.mkl -t intel-mkl:latest ./intel_mk
 # Intel TBB
 buildah build -f ./intel_tbb_image/Dockerfile.tbb -t intel-tbb:latest ./intel_tbb_image
 
-# Selene
-buildah build -f ./selene_image/Dockerfile.selene -t selene:latest ./selene_image
-
 # meson-build (final build image)
 buildah build -f ./Dockerfile.meson-build -t meson-build:latest .

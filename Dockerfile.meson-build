@@ -61,13 +61,4 @@ COPY ./build.sh /
 RUN chmod +x /build.sh && \
     mkdir build && chmod u+x ./build.sh
 
-# Selene
-# headers
-COPY --from=selene:latest /selene/ /usr/include/
-# static libs
-COPY --from=selene:latest /usr/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu/
-
-# # install deps for selene
-# RUN apt-get clean && apt-get update -y && apt-get install libjpeg62-turbo-dev libpng-dev -y
-
 ENTRYPOINT ["/build.sh"]
