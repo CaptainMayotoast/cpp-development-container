@@ -1,7 +1,8 @@
-FROM gcc:13.1
+FROM gcc:13.2
 
 ENV DEBIAN_FRONTEND noninteractive
 
+# install CMake for building 3rd party libraries
 COPY --from=cmake:latest /opt/cmake /opt/cmake
 RUN chmod +x /opt/cmake/bin/cmake
 # update path with cmake binary location
@@ -26,7 +27,8 @@ RUN echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-f
 # as of image gcc:12.1, Python3.9 is in use, which is sufficient for the use case here
 # install ninja and meson from PyPi
 RUN apt-get clean && apt-get update -y && \
-    apt-get install --no-install-recommends -y  curl \
+    apt-get install --no-install-recommends -y curl \
+    gdb \
     git \
     wget \
     libglfw3 \
@@ -36,15 +38,24 @@ RUN apt-get clean && apt-get update -y && \
     pipx \
     pkg-config \
     python3-dev \
-    python3.11-dev
+    python3.11-dev \
+    libaspell-dev \
+    clang-format && \
+    curl -fsSL https://deb.nodesource.com/setup_21.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
 
-# pipx nonsense for root :100:
-RUN pipx ensurepath && \ 
-    pipx install ninja==1.11.1 && \
-    pipx install meson==1.1.1 && \
-    pipx install conan==2.0.17 && \
-    pipx install gcovr==5.2 && \
-    chmod -R 757 /usr/local/bin
+# pipx configuration for any user
+RUN export PIPX_BIN_DIR=/usr/local/bin && \
+    mkdir -m 755 -p /usr/local/pipx && \
+    export PIPX_HOME=/usr/local/pipx && \
+    export PIPX_MAN_DIR=/usr/local/share/man/ && \
+    pipx ensurepath && \ 
+    pipx install conan==1.62.0 && \
+    pipx install gcovr==6.0 && \
+    pipx install meson==1.3.1 && \
+    pipx install ninja==1.11.1.1 && \
+    chmod -R 755 /usr/local/bin
 
 COPY ./build.sh /
 RUN chmod +x /build.sh && \
