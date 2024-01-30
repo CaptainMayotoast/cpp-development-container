@@ -2,6 +2,7 @@ FROM gcc:13.2
 
 ENV DEBIAN_FRONTEND noninteractive
 
+# install CMake for building 3rd party libraries
 COPY --from=cmake:latest /opt/cmake /opt/cmake
 RUN chmod +x /opt/cmake/bin/cmake
 # update path with cmake binary location
@@ -26,7 +27,8 @@ RUN echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-f
 # as of image gcc:12.1, Python3.9 is in use, which is sufficient for the use case here
 # install ninja and meson from PyPi
 RUN apt-get clean && apt-get update -y && \
-    apt-get install --no-install-recommends -y  curl \
+    apt-get install --no-install-recommends -y curl \
+    gdb \
     git \
     wget \
     libglfw3 \
@@ -64,5 +66,8 @@ RUN chmod +x /build.sh && \
 COPY --from=selene:latest /selene/ /usr/include/
 # static libs
 COPY --from=selene:latest /usr/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu/
+
+# # install deps for selene
+# RUN apt-get clean && apt-get update -y && apt-get install libjpeg62-turbo-dev libpng-dev -y
 
 ENTRYPOINT ["/build.sh"]

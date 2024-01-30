@@ -6,10 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 COPY ./install_selene.sh /
 
 # install deps
-RUN wget -q -O- https://packagecloud.io/dcommander/libjpeg-turbo/gpgkey | \
-    gpg --dearmor >/etc/apt/trusted.gpg.d/libjpeg-turbo.gpg
-RUN wget https://raw.githubusercontent.com/libjpeg-turbo/repo/main/libjpeg-turbo.list -O /etc/apt/sources.list.d/libjpeg-turbo.list
-RUN apt-get update -y && apt-get install -y libpng-dev zlib1g-dev libjpeg-turbo-official tar unzip wget curl git zip
+RUN apt-get clean && apt-get update -y && apt-get install libjpeg62-turbo-dev libpng-dev -y
 
 COPY --from=cmake:latest /opt/cmake /opt/cmake
 # update path with cmake binary location
