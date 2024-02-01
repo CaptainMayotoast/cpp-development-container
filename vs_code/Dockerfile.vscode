@@ -35,4 +35,6 @@ RUN pipx ensurepath && \
     pipx install meson==1.1.1 && \
     pipx install gcovr==5.2
 
+ENV CUDA_PATH=/usr/local/cuda/x86_64-linux/
+
 CMD ["/bin/bash"]

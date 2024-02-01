@@ -61,4 +61,7 @@ COPY ./build.sh /
 RUN chmod +x /build.sh && \
     mkdir build && chmod u+x ./build.sh
 
+# for CUDA, necessary for Meson
+ENV CUDA_PATH=/usr/local/cuda/x86_64-linux/
+
 ENTRYPOINT ["/build.sh"]
