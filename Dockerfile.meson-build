@@ -12,8 +12,8 @@ ENV PATH="${PATH}:/opt/cmake/bin"
 COPY --from=intel-tbb:latest /opt/intel/oneapi/ /opt/intel/oneapi/
 COPY --from=intel-mkl:latest /opt/intel/oneapi/ /opt/intel/oneapi/
 
-# CUDA
-COPY --from=nvidia/cuda:12.1.0-devel-ubuntu22.04 /usr/local/cuda/* /usr/local/cuda/
+# CUDA (https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=ubuntu)
+COPY --from=nvidia/cuda:12.3.1-devel-ubuntu22.04 /usr/local/cuda-12.3/ /usr/local/cuda-12.3/
 
 # Boost
 COPY --from=boost:latest /opt/boost/include/* /usr/include/boost/
@@ -24,8 +24,6 @@ RUN echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-f
     echo "deb-src http://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
     apt update -y
 
-# as of image gcc:12.1, Python3.9 is in use, which is sufficient for the use case here
-# install ninja and meson from PyPi
 RUN apt-get clean && apt-get update -y && \
     apt-get install --no-install-recommends -y curl \
     gdb \

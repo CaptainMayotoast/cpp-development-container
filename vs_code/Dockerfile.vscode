@@ -29,12 +29,12 @@ RUN cat /.bashrc >> /home/$USERNAME/.bashrc
 # this script should run upon container creation
 COPY ./env_setup.sh /etc/profile.d/
 
-# pipx nonsense :100:
-RUN pipx ensurepath && \ 
-    pipx install ninja==1.11.1 && \
-    pipx install meson==1.1.1 && \
-    pipx install gcovr==5.2
+# # pipx nonsense :100:
+# RUN pipx ensurepath && \ 
+#     pipx install ninja==1.11.1 && \
+#     pipx install meson==1.1.1 && \
+#     pipx install gcovr==5.2
 
-ENV CUDA_PATH=/usr/local/cuda/x86_64-linux/
+# ENV CUDA_PATH=/usr/local/cuda/x86_64-linux/
 
 CMD ["/bin/bash"]
