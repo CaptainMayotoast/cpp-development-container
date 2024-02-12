@@ -1,6 +1,14 @@
-## Building the Docker image from Dockerfile
+# Building the Docker image from Dockerfile
 
-`assemble_images*.sh`
+## Quickstart
+
+Run `assemble_images_docker.sh`.  Then:
+
+- View the README inside of `vs_code` and develop from within the container using VS Code.
+  
+OR
+
+- Run `docker run -u "$(id -u)":"$(id -g)" -v /etc/passwd:/etc/passwd -v /etc/group:/etc/group -v $PWD/:/build -it --rm meson-build:latest <build mode>`, where `<build mode>` is `debug`, `release`, or `debugsan`.
 
 ## Summary
 
