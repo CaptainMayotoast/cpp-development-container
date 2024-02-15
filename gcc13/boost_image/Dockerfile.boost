@@ -1,0 +1,11 @@
+FROM gcc:13.1
+
+ENV DEBIAN_FRONTEND noninteractive
+
+COPY ./install_boost_latest.sh /
+
+RUN apt update -y && \
+    apt install -y wget && \
+    chmod u+x ./install_boost_latest.sh && \
+    ./install_boost_latest.sh
+    

@@ -1,0 +1,8 @@
+FROM gcc:13.1
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# install Intel mkl
+COPY ./install_intel_mkl.sh /
+RUN chmod +x /install_intel_mkl.sh && \
+    /install_intel_mkl.sh     

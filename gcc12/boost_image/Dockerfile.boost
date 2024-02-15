@@ -1,4 +1,4 @@
-FROM gcc:13.2
+FROM gcc:12.2
 
 ENV DEBIAN_FRONTEND noninteractive
 
