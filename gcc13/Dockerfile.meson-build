@@ -58,10 +58,4 @@ COPY ./build.sh /
 RUN chmod +x /build.sh && \
     mkdir build && chmod u+x ./build.sh
 
-# Selene
-# headers
-COPY --from=selene:latest /selene/ /usr/include/
-# static libs
-COPY --from=selene:latest /usr/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu/
-
 ENTRYPOINT ["/build.sh"]
