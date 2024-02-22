@@ -7,9 +7,6 @@ docker build -f ./boost_image/Dockerfile.boost -t boost:13.1 ./boost_image
 # cmake
 docker build -f ./cmake_image/Dockerfile.cmake -t cmake:13.1 ./cmake_image
 
-# grpc
-docker build -f ./grpc_image/Dockerfile.grpc -t grpc:13.1 ./grpc_image
-
 # Intel MKL
 docker build -f ./intel_mkl_image/Dockerfile.mkl -t intel-mkl:13.1 ./intel_mkl_image
 

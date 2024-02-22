@@ -12,7 +12,8 @@ COPY --from=intel-tbb:latest /opt/intel/oneapi/ /opt/intel/oneapi/
 COPY --from=intel-mkl:latest /opt/intel/oneapi/ /opt/intel/oneapi/
 
 # CUDA
-COPY --from=nvidia/cuda:12.1.0-devel-ubuntu22.04 /usr/local/cuda/* /usr/local/cuda/
+COPY --from=nvidia/cuda:12.3.1-devel-ubuntu22.04 /usr/local/cuda-12.3/ /usr/local/cuda-12.3/
+COPY --from=nvidia/cuda:12.3.1-devel-ubuntu22.04 /usr/local/cuda-12.3/lib64/ /lib64/
 
 # Boost
 COPY --from=boost:latest /opt/boost/include/* /usr/include/boost/
