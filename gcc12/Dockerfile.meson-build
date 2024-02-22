@@ -14,6 +14,7 @@ COPY --from=intel-mkl:latest /opt/intel/oneapi/ /opt/intel/oneapi/
 
 # CUDA (https://hub.docker.com/r/nvidia/cuda/tags?page=1&name=ubuntu)
 COPY --from=nvidia/cuda:12.3.1-devel-ubuntu22.04 /usr/local/cuda-12.3/ /usr/local/cuda-12.3/
+COPY --from=nvidia/cuda:12.3.1-devel-ubuntu22.04 /usr/local/cuda-12.3/lib64/ /lib64/
 
 # Boost
 COPY --from=boost:latest /opt/boost/include/* /usr/include/boost/

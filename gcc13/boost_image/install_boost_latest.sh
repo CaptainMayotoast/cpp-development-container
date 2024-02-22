@@ -3,7 +3,6 @@
 set -e
 
 # https://github.com/boostorg/boost/releases/tag/
-# https://github.com/grpc/grpc/blob/master/BUILDING.md#build-from-source
 
 BOOST_VERSION=1.84.0
 
