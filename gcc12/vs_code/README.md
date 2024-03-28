@@ -26,6 +26,8 @@ The layout changed a bit recently for this file, so it has been revised to work 
 
 Configure `docker run` arguments here, as well as specify a folder bind mount for source code.
 
+Install the NVidia [toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) if GPU availability is desired. Run `nvidia-smi` to verify the container has access to a GPU.
+
 ## `Dockerfile.vscode`
 
 Specifies user specific settings.  VS Code + containers is very host user centric.  Update `ARG`s at the top with specific settings.

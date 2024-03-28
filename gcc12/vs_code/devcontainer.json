@@ -26,6 +26,8 @@
         "context": "."
     },
     "runArgs": [
+        "--gpus",
+        "all",
         "--network=host",
         "--cap-add=SYS_PTRACE",
         "--security-opt",
