@@ -35,7 +35,6 @@ RUN apt-get clean && apt-get update -y && \
     mesa-utils \
     pipx \
     pkg-config \
-    python3-dev \
     python3.11-dev \
     libaspell-dev \
     clang-format && \
@@ -58,5 +57,10 @@ RUN export PIPX_BIN_DIR=/usr/local/bin && \
 COPY ./build.sh /
 RUN chmod +x /build.sh && \
     mkdir build && chmod u+x ./build.sh
+
+# the bleeding edge (at the time of this writing) libstdc++ is needed
+# run: strings /usr/local/lib64/libstdc++.so.6.0.32 | grep GLIBCXX
+# see "GLIBCXX_3.4.32", which binaries and libraries need when built with gcc13.2
+RUN mv /usr/local/lib64/libstdc++.so.6.0.32 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
 ENTRYPOINT ["/build.sh"]
