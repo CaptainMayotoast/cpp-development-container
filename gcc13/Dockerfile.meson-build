@@ -2,22 +2,22 @@ FROM gcc:13.2
 
 ENV DEBIAN_FRONTEND noninteractive
 
-COPY --from=cmake:latest /opt/cmake /opt/cmake
+COPY --from=cmake:13.2 /opt/cmake /opt/cmake
 RUN chmod +x /opt/cmake/bin/cmake
 # update path with cmake binary location
 ENV PATH="${PATH}:/opt/cmake/bin"
 
 # copy over Intel libraries (TBB, MKL) artefacts
-COPY --from=intel-tbb:latest /opt/intel/oneapi/ /opt/intel/oneapi/
-COPY --from=intel-mkl:latest /opt/intel/oneapi/ /opt/intel/oneapi/
+COPY --from=intel-tbb:13.2 /opt/intel/oneapi/ /opt/intel/oneapi/
+COPY --from=intel-mkl:13.2 /opt/intel/oneapi/ /opt/intel/oneapi/
 
 # CUDA
 COPY --from=nvidia/cuda:12.4.1-devel-ubuntu22.04 /usr/local/cuda-12.4/ /usr/local/cuda-12.4/
 COPY --from=nvidia/cuda:12.4.1-devel-ubuntu22.04 /usr/local/cuda-12.4/lib64/ /lib64/
 
 # Boost
-COPY --from=boost:latest /opt/boost/include/* /usr/include/boost/
-COPY --from=boost:latest /opt/boost/lib/* /usr/lib/x86_64-linux-gnu/
+COPY --from=boost:13.2 /opt/boost/include/* /usr/include/boost/
+COPY --from=boost:13.2 /opt/boost/lib/* /usr/lib/x86_64-linux-gnu/
 
 # Debian backports to get pipx
 RUN echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \

@@ -4,7 +4,7 @@ set -e
 
 # https://github.com/Kitware/CMake/releases
 
-CMAKE_VERSION=3.28.1
+CMAKE_VERSION=3.29.2
 
 wget https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION.tar.gz
 tar -xzvf cmake-$CMAKE_VERSION.tar.gz
