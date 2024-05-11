@@ -60,7 +60,10 @@ RUN chmod +x /build.sh && \
 
 # the bleeding edge (at the time of this writing) libstdc++ is needed
 # run: strings /usr/local/lib64/libstdc++.so.6.0.32 | grep GLIBCXX
-# see "GLIBCXX_3.4.32", which binaries and libraries need when built with gcc13.2
+# should see "GLIBCXX_3.4.32", which binaries and libraries need when built with gcc13.2
 RUN mv /usr/local/lib64/libstdc++.so.6.0.32 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+
+# set envrionment variables for container (find CMake binary and CUDA libraries)
+ENV PATH=${PATH}:/usr/local/cuda-12.4/bin/:/opt/cmake/bin
 
 ENTRYPOINT ["/build.sh"]
