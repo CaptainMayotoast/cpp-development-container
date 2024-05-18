@@ -2,10 +2,10 @@ FROM gcc:13.2
 
 ENV DEBIAN_FRONTEND noninteractive
 
-COPY --from=cmake:13.2 /opt/cmake /opt/cmake
-RUN chmod +x /opt/cmake/bin/cmake
-# update path with cmake binary location
-ENV PATH="${PATH}:/opt/cmake/bin"
+# COPY --from=cmake:13.2 /opt/cmake /opt/cmake
+# RUN chmod +x /opt/cmake/bin/cmake
+# # update path with cmake binary location
+# ENV PATH="${PATH}:/opt/cmake/bin"
 
 # copy over Intel libraries (TBB, MKL) artefacts
 COPY --from=intel-tbb:13.2 /opt/intel/oneapi/ /opt/intel/oneapi/
@@ -27,6 +27,7 @@ RUN echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-f
 # install ninja and meson from PyPi
 RUN apt-get clean && apt-get update -y && \
     apt-get install --no-install-recommends -y  curl \
+    cmake \
     git \
     wget \
     libglfw3 \
@@ -48,7 +49,6 @@ RUN export PIPX_BIN_DIR=/usr/local/bin && \
     export PIPX_HOME=/usr/local/pipx && \
     export PIPX_MAN_DIR=/usr/local/share/man/ && \
     pipx ensurepath && \ 
-    pipx install conan==1.62.0 && \
     pipx install gcovr==6.0 && \
     pipx install meson==1.4.0 && \
     pipx install ninja==1.11.1.1 && \
