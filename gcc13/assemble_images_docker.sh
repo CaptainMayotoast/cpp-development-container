@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-# # boost
-# docker build -f ./boost_image/Dockerfile.boost -t boost:13.2 ./boost_image
+# boost
+docker build -f ./boost_image/Dockerfile.boost -t boost:13.2 ./boost_image
 
 # # cmake
 # docker build -f ./cmake_image/Dockerfile.cmake -t cmake:13.2 ./cmake_image

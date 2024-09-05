@@ -8,8 +8,8 @@ ENV DEBIAN_FRONTEND noninteractive
 # ENV PATH="${PATH}:/opt/cmake/bin"
 
 # copy over Intel libraries (TBB, MKL) artefacts
-COPY --from=intel-tbb:13.2 /opt/intel/oneapi/ /opt/intel/oneapi/
-COPY --from=intel-mkl:13.2 /opt/intel/oneapi/ /opt/intel/oneapi/
+# COPY --from=intel-tbb:13.2 /opt/intel/oneapi/ /opt/intel/oneapi/
+# COPY --from=intel-mkl:13.2 /opt/intel/oneapi/ /opt/intel/oneapi/
 
 # CUDA
 COPY --from=nvidia/cuda:12.4.1-devel-ubuntu22.04 /usr/local/cuda-12.4/ /usr/local/cuda-12.4/
@@ -65,5 +65,7 @@ RUN mv /usr/local/lib64/libstdc++.so.6.0.32 /usr/lib/x86_64-linux-gnu/libstdc++.
 
 # set envrionment variables for container (find CMake binary and CUDA libraries)
 ENV PATH=${PATH}:/usr/local/cuda-12.4/bin/:/opt/cmake/bin
+# for meson install (i.e. ninja -C install debug)
+ENV PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python3/dist-packages
 
 ENTRYPOINT ["/build.sh"]
