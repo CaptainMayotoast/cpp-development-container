@@ -51,7 +51,7 @@ RUN export PIPX_BIN_DIR=/usr/local/bin && \
     mkdir -m 755 -p /usr/local/pipx && \
     export PIPX_HOME=/usr/local/pipx && \
     export PIPX_MAN_DIR=/usr/local/share/man/ && \
-    pipx ensurepath && \ 
+    pipx ensurepath && \
     pipx install gcovr==$GCOVR_VERSION && \
     pipx install meson==$MESON_VERSION && \
     pipx install ninja==$NINJA_VERSION && \
@@ -62,10 +62,15 @@ COPY ./build/build.sh /
 RUN chmod +x /build.sh && \
     mkdir build && chmod u+x ./build.sh
 
-# install muon 
+# install muon
 COPY ./muon_install/get_install_muon.sh /
 RUN chmod +x /get_install_muon.sh && \
     /get_install_muon.sh
+
+# install, configure ccache
+COPY ./ccache_install/get_configure_ccache.sh /
+RUN chmod +x /get_configure_ccache.sh && \
+    /get_configure_ccache.sh
 
 # the bleeding edge (at the time of this writing) libstdc++ is needed
 # run: strings /usr/local/lib64/libstdc++.so.6.0.32 | grep GLIBCXX
