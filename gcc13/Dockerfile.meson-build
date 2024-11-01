@@ -3,28 +3,48 @@ FROM gcc:13.3
 ARG MESON_VERSION=1.6.0
 ARG NINJA_VERSION=1.11.1.1
 ARG GCOVR_VERSION=8.2
+ARG PRECOMMIT_VERSION=4.0.1
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
-# CMake (for building Boost)
+# install CMake (for building Boost)
 COPY ./cmake_install/get_cmake.sh /
 RUN chmod u+x /get_cmake.sh && \
     /get_cmake.sh
 ENV PATH="${PATH}:/opt/cmake/bin"
 
-# CUDA
+# install CUDA
 # https://hub.docker.com/r/nvidia/cuda/tags
 COPY --from=nvidia/cuda:12.6.2-devel-ubuntu22.04 /usr/local/cuda-12.6/ /usr/local/cuda-12.6/
 COPY --from=nvidia/cuda:12.6.2-devel-ubuntu22.04 /usr/local/cuda-12.6/lib64/ /lib64/
 
-# Boost (headers and libraries)
+# install Boost (headers and libraries)
 COPY --from=boost:13.3 /opt/boost/include/* /usr/include/boost/
 COPY --from=boost:13.3 /opt/boost/lib/* /usr/lib/x86_64-linux-gnu/
+
+# install muon
+COPY ./muon_install/get_install_muon.sh /
+RUN chmod +x /get_install_muon.sh && \
+    /get_install_muon.sh
+
+# install, configure ccache
+COPY ./ccache_install/get_configure_ccache.sh /
+RUN chmod +x /get_configure_ccache.sh && \
+    /get_configure_ccache.sh
+
+# build and install mold linker
+COPY ./mold_linker_install/get_build_install_mold.sh /
+RUN chmod +x /get_build_install_mold.sh && \
+    /get_build_install_mold.sh
 
 # Debian backports to get pipx
 RUN echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
     echo "deb-src http://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
     apt update -y
+
+# RUN echo "deb http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm main" >> /etc/apt/sources.list && \
+#     echo "deb-src http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm main" >> /etc/apt/sources.list && \
+#     apt update -y
 
 # general dependencies
 RUN apt-get clean && apt-get update -y && \
@@ -37,11 +57,13 @@ RUN apt-get clean && apt-get update -y && \
     libpistache-dev \
     freeglut3-dev \
     mesa-utils \
+    vim \
     pipx \
     pkg-config \
     python3.11-dev \
     libaspell-dev \
-    clang-format && \
+    clang-format \
+    clang-tidy && \
     curl -fsSL https://deb.nodesource.com/setup_21.x | bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
@@ -55,22 +77,13 @@ RUN export PIPX_BIN_DIR=/usr/local/bin && \
     pipx install gcovr==$GCOVR_VERSION && \
     pipx install meson==$MESON_VERSION && \
     pipx install ninja==$NINJA_VERSION && \
+    pipx install pre-commit==$PRECOMMIT_VERSION && \
     chmod -R 755 /usr/local/bin
 
 # helper build script for various types of build targets
 COPY ./build/build.sh /
 RUN chmod +x /build.sh && \
     mkdir build && chmod u+x ./build.sh
-
-# install muon
-COPY ./muon_install/get_install_muon.sh /
-RUN chmod +x /get_install_muon.sh && \
-    /get_install_muon.sh
-
-# install, configure ccache
-COPY ./ccache_install/get_configure_ccache.sh /
-RUN chmod +x /get_configure_ccache.sh && \
-    /get_configure_ccache.sh
 
 # the bleeding edge (at the time of this writing) libstdc++ is needed
 # run: strings /usr/local/lib64/libstdc++.so.6.0.32 | grep GLIBCXX
@@ -80,6 +93,6 @@ RUN mv /usr/local/lib64/libstdc++.so.6.0.32 /usr/lib/x86_64-linux-gnu/libstdc++.
 # set envrionment variables for container (find CMake binary and CUDA libraries)
 ENV PATH=${PATH}:/usr/local/cuda-12.6/bin/:/opt/cmake/bin
 # for meson install (i.e. ninja -C install debug)
-ENV PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python3/dist-packages
+ENV PYTHONPATH=/usr/local/lib/python3/dist-packages
 
 ENTRYPOINT ["/build.sh"]
