@@ -2,16 +2,7 @@
 set -e
 
 # boost
-docker build -f ./boost_image/Dockerfile.boost -t boost:13.2 ./boost_image
-
-# # cmake
-# docker build -f ./cmake_image/Dockerfile.cmake -t cmake:13.2 ./cmake_image
-
-# # Intel MKL
-# docker build -f ./intel_mkl_image/Dockerfile.mkl -t intel-mkl:13.2 ./intel_mkl_image
-
-# # Intel TBB
-# docker build -f ./intel_tbb_image/Dockerfile.tbb -t intel-tbb:13.2 ./intel_tbb_image
+docker build -f ./boost_image/Dockerfile.boost -t boost:13.3 ./boost_image
 
 # meson-build (final build image)
-docker build -f ./Dockerfile.meson-build -t meson-build:13.2 .
+docker build -f ./Dockerfile.meson-build -t meson-build:13.3 .

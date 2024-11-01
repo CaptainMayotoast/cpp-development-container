@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # enter /build within the container
 cd /build
 

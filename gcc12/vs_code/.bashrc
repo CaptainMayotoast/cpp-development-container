@@ -1,1 +1,0 @@
-alias build="/build.sh"

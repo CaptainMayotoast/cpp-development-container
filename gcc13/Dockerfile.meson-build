@@ -1,30 +1,32 @@
-FROM gcc:13.2
+FROM gcc:13.3
+
+ARG MESON_VERSION=1.6.0
+ARG NINJA_VERSION=1.11.1.1
+ARG GCOVR_VERSION=8.2
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# COPY --from=cmake:13.2 /opt/cmake /opt/cmake
-# RUN chmod +x /opt/cmake/bin/cmake
-# # update path with cmake binary location
-# ENV PATH="${PATH}:/opt/cmake/bin"
-
-# copy over Intel libraries (TBB, MKL) artefacts
-# COPY --from=intel-tbb:13.2 /opt/intel/oneapi/ /opt/intel/oneapi/
-# COPY --from=intel-mkl:13.2 /opt/intel/oneapi/ /opt/intel/oneapi/
+# CMake (for building Boost)
+COPY ./cmake_install/get_cmake.sh /
+RUN chmod u+x /get_cmake.sh && \
+    /get_cmake.sh
+ENV PATH="${PATH}:/opt/cmake/bin"
 
 # CUDA
-COPY --from=nvidia/cuda:12.4.1-devel-ubuntu22.04 /usr/local/cuda-12.4/ /usr/local/cuda-12.4/
-COPY --from=nvidia/cuda:12.4.1-devel-ubuntu22.04 /usr/local/cuda-12.4/lib64/ /lib64/
+# https://hub.docker.com/r/nvidia/cuda/tags
+COPY --from=nvidia/cuda:12.6.2-devel-ubuntu22.04 /usr/local/cuda-12.6/ /usr/local/cuda-12.6/
+COPY --from=nvidia/cuda:12.6.2-devel-ubuntu22.04 /usr/local/cuda-12.6/lib64/ /lib64/
 
-# Boost
-COPY --from=boost:13.2 /opt/boost/include/* /usr/include/boost/
-COPY --from=boost:13.2 /opt/boost/lib/* /usr/lib/x86_64-linux-gnu/
+# Boost (headers and libraries)
+COPY --from=boost:13.3 /opt/boost/include/* /usr/include/boost/
+COPY --from=boost:13.3 /opt/boost/lib/* /usr/lib/x86_64-linux-gnu/
 
 # Debian backports to get pipx
 RUN echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
     echo "deb-src http://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
     apt update -y
 
-# install ninja and meson from PyPi
+# general dependencies
 RUN apt-get clean && apt-get update -y && \
     apt-get install --no-install-recommends -y  curl \
     cmake \
@@ -50,14 +52,20 @@ RUN export PIPX_BIN_DIR=/usr/local/bin && \
     export PIPX_HOME=/usr/local/pipx && \
     export PIPX_MAN_DIR=/usr/local/share/man/ && \
     pipx ensurepath && \ 
-    pipx install gcovr==6.0 && \
-    pipx install meson==1.4.0 && \
-    pipx install ninja==1.11.1.1 && \
+    pipx install gcovr==$GCOVR_VERSION && \
+    pipx install meson==$MESON_VERSION && \
+    pipx install ninja==$NINJA_VERSION && \
     chmod -R 755 /usr/local/bin
 
-COPY ./build.sh /
+# helper build script for various types of build targets
+COPY ./build/build.sh /
 RUN chmod +x /build.sh && \
     mkdir build && chmod u+x ./build.sh
+
+# install muon 
+COPY ./muon_install/get_install_muon.sh /
+RUN chmod +x /get_install_muon.sh && \
+    /get_install_muon.sh
 
 # the bleeding edge (at the time of this writing) libstdc++ is needed
 # run: strings /usr/local/lib64/libstdc++.so.6.0.32 | grep GLIBCXX
@@ -65,7 +73,7 @@ RUN chmod +x /build.sh && \
 RUN mv /usr/local/lib64/libstdc++.so.6.0.32 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
 # set envrionment variables for container (find CMake binary and CUDA libraries)
-ENV PATH=${PATH}:/usr/local/cuda-12.4/bin/:/opt/cmake/bin
+ENV PATH=${PATH}:/usr/local/cuda-12.6/bin/:/opt/cmake/bin
 # for meson install (i.e. ninja -C install debug)
 ENV PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python3/dist-packages
 
