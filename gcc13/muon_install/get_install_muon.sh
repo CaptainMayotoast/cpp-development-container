@@ -7,7 +7,7 @@ cd muon
 
 ./bootstrap.sh build
 
-build/muon setup build
-build/muon -C build samu
-build/muon -C build test
-build/muon -C build install
+build/muon-bootstrap setup build
+build/muon-bootstrap -C build samu
+build/muon-bootstrap -C build test
+build/muon-bootstrap -C build install
