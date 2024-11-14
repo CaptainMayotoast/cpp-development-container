@@ -62,11 +62,21 @@ RUN apt-get clean && apt-get update -y && \
     pkg-config \
     python3.11-dev \
     libaspell-dev \
+    libmpc-dev \
+    texinfo \
+    bison \
+    flex \
     clang-format \
     clang-tidy && \
     curl -fsSL https://deb.nodesource.com/setup_21.x | bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
+
+# install GDB (15.1 works with GCC 13.3)
+# need libmpc-dev, texinfo, bison, flex
+COPY ./gdb_install/get_install_gdb.sh /
+RUN chmod +x /get_install_gdb.sh && \
+    /get_install_gdb.sh
 
 # pipx configuration for any user
 RUN export PIPX_BIN_DIR=/usr/local/bin && \
