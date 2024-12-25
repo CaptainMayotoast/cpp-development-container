@@ -1,8 +1,13 @@
-FROM gcc:13.3
+# https://hub.docker.com/_/gcc/
+FROM gcc:14.2
 
-ARG MESON_VERSION=1.6.0
-ARG NINJA_VERSION=1.11.1.1
+# https://pypi.org/project/meson/
+ARG MESON_VERSION=1.6.1
+# https://pypi.org/project/ninja/
+ARG NINJA_VERSION=1.11.1.3
+# https://pypi.org/project/gcovr/
 ARG GCOVR_VERSION=8.2
+# https://pypi.org/project/pre-commit/
 ARG PRECOMMIT_VERSION=4.0.1
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -15,12 +20,12 @@ ENV PATH="${PATH}:/opt/cmake/bin"
 
 # install CUDA
 # https://hub.docker.com/r/nvidia/cuda/tags
-COPY --from=nvidia/cuda:12.6.2-devel-ubuntu22.04 /usr/local/cuda-12.6/ /usr/local/cuda-12.6/
-COPY --from=nvidia/cuda:12.6.2-devel-ubuntu22.04 /usr/local/cuda-12.6/lib64/ /lib64/
+COPY --from=nvidia/cuda:12.6.3-devel-ubuntu22.04 /usr/local/cuda-12.6/ /usr/local/cuda-12.6/
+COPY --from=nvidia/cuda:12.6.3-devel-ubuntu22.04 /usr/local/cuda-12.6/lib64/ /lib64/
 
 # install Boost (headers and libraries)
-COPY --from=boost:13.3 /opt/boost/include/* /usr/include/boost/
-COPY --from=boost:13.3 /opt/boost/lib/* /usr/lib/x86_64-linux-gnu/
+COPY --from=boost:14.2 /opt/boost/include/* /usr/include/boost/
+COPY --from=boost:14.2 /opt/boost/lib/* /usr/lib/x86_64-linux-gnu/
 
 # install muon
 COPY ./muon_install/get_install_muon.sh /
@@ -40,37 +45,34 @@ RUN chmod +x /get_build_install_mold.sh && \
 # Debian backports to get pipx
 RUN echo "deb http://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
     echo "deb-src http://deb.debian.org/debian bookworm-backports main contrib non-free" >> /etc/apt/sources.list && \
-    apt update -y
-
-# RUN echo "deb http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm main" >> /etc/apt/sources.list && \
-#     echo "deb-src http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm main" >> /etc/apt/sources.list && \
-#     apt update -y
+    apt-get update -y
 
 # general dependencies
 RUN apt-get clean && apt-get update -y && \
-    apt-get install --no-install-recommends -y  curl \
+    apt-get install --no-install-recommends -y bison \
+    clang-format \
+    clang-tidy \
     cmake \
+    curl \
+    flex \
+    freeglut3-dev \
     git \
-    wget \
+    libaspell-dev \
     libglfw3 \
     libglfw3-dev \
-    libpistache-dev \
-    freeglut3-dev \
-    mesa-utils \
-    vim \
-    pipx \
-    pkg-config \
-    python3.11-dev \
-    libaspell-dev \
     libmpc-dev \
+    libpistache-dev \
+    mesa-utils \
+    pkg-config \
+    pipx \
+    python3.11-dev \
     texinfo \
-    bison \
-    flex \
-    clang-format \
-    clang-tidy && \
+    vim \
+    wget && \
     curl -fsSL https://deb.nodesource.com/setup_21.x | bash - && \
     apt-get install -y nodejs && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # install GDB (15.1 works with GCC 13.3)
 # need libmpc-dev, texinfo, bison, flex
@@ -84,10 +86,10 @@ RUN export PIPX_BIN_DIR=/usr/local/bin && \
     export PIPX_HOME=/usr/local/pipx && \
     export PIPX_MAN_DIR=/usr/local/share/man/ && \
     pipx ensurepath && \
-    pipx install gcovr==$GCOVR_VERSION && \
-    pipx install meson==$MESON_VERSION && \
-    pipx install ninja==$NINJA_VERSION && \
-    pipx install pre-commit==$PRECOMMIT_VERSION && \
+    pipx install gcovr=="$GCOVR_VERSION" && \
+    pipx install meson=="$MESON_VERSION" && \
+    pipx install ninja=="$NINJA_VERSION" && \
+    pipx install pre-commit=="$PRECOMMIT_VERSION" && \
     chmod -R 755 /usr/local/bin
 
 # helper build script for various types of build targets
@@ -96,13 +98,21 @@ RUN chmod +x /build.sh && \
     mkdir build && chmod u+x ./build.sh
 
 # the bleeding edge (at the time of this writing) libstdc++ is needed
-# run: strings /usr/local/lib64/libstdc++.so.6.0.32 | grep GLIBCXX
-# should see "GLIBCXX_3.4.32", which binaries and libraries need when built with gcc13.2
-RUN mv /usr/local/lib64/libstdc++.so.6.0.32 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
+# run: strings /usr/local/lib64/libstdc++.so.6.0.33 | grep GLIBCXX
+# should see "GLIBCXX_3.4.33", which binaries and libraries need when built with gcc14.2
+RUN mv /usr/local/lib64/libstdc++.so.6.0.33 /usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
 # set envrionment variables for container (find CMake binary and CUDA libraries)
 ENV PATH=${PATH}:/usr/local/cuda-12.6/bin/:/opt/cmake/bin
 # for meson install (i.e. ninja -C install debug)
 ENV PYTHONPATH=/usr/local/lib/python3/dist-packages
+
+# port in GCC 13.3 for NVCC
+ENV NVCC_CCBIN="/usr/local/bin/gcc13.3"
+
+COPY --from=gcc:13.3 /usr/local/include/c++ /usr/local/include/c++
+COPY --from=gcc:13.3 /usr/local/libexec/gcc/x86_64-linux-gnu/ /usr/local/libexec/gcc/x86_64-linux-gnu/
+COPY --from=gcc:13.3 /usr/local/lib/gcc/x86_64-linux-gnu/ /usr/local/lib/gcc/x86_64-linux-gnu/
+COPY --from=gcc:13.3 /usr/local/bin/gcc /usr/local/bin/gcc13.3
 
 ENTRYPOINT ["/build.sh"]
