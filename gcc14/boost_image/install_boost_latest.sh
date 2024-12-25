@@ -2,15 +2,15 @@
 
 set -e
 
-# https://github.com/boostorg/boost/releases/tag/
+# https://github.com/boostorg/boost/releases/
 
-BOOST_VERSION=1.86.0
+BOOST_VERSION=1.87.0
 
 echo "downloading boost version ${BOOST_VERSION}"
 
 git clone --recursive --depth 1 -j 16 https://github.com/boostorg/boost.git
 cd boost
-git checkout master 
+git checkout master
 ./bootstrap.sh --prefix=/opt/boost
 echo "installing boost (static libraries)"
 ./b2 link=static
